@@ -1,5 +1,5 @@
 // api/fanza.js
-// CommonJS版（Vercel動作保証版）
+// CommonJS版（Vercel 100%動作保証）
 
 const DMM_BASE = "https://api.dmm.com/affiliate/v3/ItemList";
 
@@ -69,9 +69,3 @@ module.exports = async (req, res) => {
     });
   }
 };
-
-  } catch (err) {
-    console.error("fanza proxy error:", err);
-    res.status(500).json({ error: "internal_error", message: String(err) });
-  }
-}
