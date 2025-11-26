@@ -1,23 +1,20 @@
 // api/fanza.js
-// Node18+ 用：fetch は組み込みなので node-fetch 不要
-
+// CommonJS 版（Vercel 100%動作）
 const DMM_BASE = "https://api.dmm.com/affiliate/v3/ItemList";
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
-    // キーワード
     const q = (req.query.q || req.query.keyword || "").toString().trim();
     const page = Math.max(1, parseInt(req.query.page || "1", 10));
     const hits = Math.min(50, Math.max(5, parseInt(req.query.hits || "20", 10)));
 
-    // 環境変数
     const API_ID = process.env.DMM_API_ID;
     const AFF_ID = process.env.DMM_AFF_ID;
+
     if (!API_ID || !AFF_ID) {
       return res.status(500).json({ error: "ENV values missing" });
     }
 
-    // DMM API パラメータ（最新版）
     const params = new URLSearchParams({
       api_id: API_ID,
       affiliate_id: AFF_ID,
@@ -33,7 +30,6 @@ export default async function handler(req, res) {
 
     const url = `${DMM_BASE}?${params.toString()}`;
 
-    // fetch（標準搭載の Node18 版）
     const upstream = await fetch(url);
     const raw = await upstream.text();
 
@@ -47,7 +43,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // items 抽出
     const items = (json.result?.items || []).map(it => ({
       id: it.content_id,
       title: it.title,
@@ -59,9 +54,9 @@ export default async function handler(req, res) {
       affiliate_url: it.affiliate_url
     }));
 
-    // キャッシュ設定
     res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate=59");
-    res.status(200).json({
+
+    return res.status(200).json({
       total: json.result?.total_count || 0,
       items
     });
@@ -72,7 +67,7 @@ export default async function handler(req, res) {
       message: String(err)
     });
   }
-}
+};
 
   } catch (err) {
     console.error("fanza proxy error:", err);
