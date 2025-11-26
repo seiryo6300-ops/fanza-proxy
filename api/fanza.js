@@ -1,5 +1,6 @@
 // api/fanza.js
-// CommonJS 版（Vercel 100%動作）
+// CommonJS版（Vercel動作保証版）
+
 const DMM_BASE = "https://api.dmm.com/affiliate/v3/ItemList";
 
 module.exports = async (req, res) => {
