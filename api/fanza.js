@@ -1,5 +1,5 @@
 
-  export default async function handler(req, res) {
+ export default async function handler(req, res) {
   const {
     api_id = process.env.API_ID,
     affiliate_id = process.env.AFFILIATE_ID,
@@ -12,12 +12,12 @@
     return res.status(400).json({ error: "Missing API_ID or AFFILIATE_ID" });
   }
 
-  // FANZA（DMM）動画：2024年対応の正しいパラメータ
+  // 2024〜2025 FANZA API 正式版
   const url =
     `https://api.dmm.com/affiliate/v3/ItemList?` +
     `api_id=${api_id}` +
     `&affiliate_id=${affiliate_id}` +
-    `&site=DMM` +
+    `&site=FANZA` +          // ← ここが重要
     `&service=digital` +
     `&keyword=${encodeURIComponent(keyword)}` +
     `&hits=${hits}` +
